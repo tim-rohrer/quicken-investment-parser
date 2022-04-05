@@ -1,4 +1,33 @@
 # quicken-investment-parser
-Parses an exported file from Quicken into a manageable form.
+Parses an exported csv file from Quicken into a manageable form.
 
-The purpose is to specifically taken exported investment information and use python to clean it up into a usable form. At this time, "usable form" is not defined, and work on this project may not continue.
+The purpose is to specifically take exported investment information and use nodejs to clean it up into a form compliant with the following interface:
+
+```ts
+interface InvestmentPositions {
+  date: Date,
+  type: string, // should be an enum to be defined
+  action: string, // ditto
+  payee: string,
+  accountName: string,
+  securityName: string,
+  ticker: string,
+  cashIn: number,
+  cashOut: number,
+  investAmount: number, // this probably isn't right yet
+  statementMemo: string,
+  reference: string,
+  lotInfo: LotInfo[]  
+}
+```
+
+where `LotInfo` is of:
+
+```ts
+type LotInfo = {
+  dateModified = Date
+  sharesIn = number
+  sharesOut = number
+  shares
+ }
+```
