@@ -1,0 +1,11 @@
+{
+  "extends": "tsconfig/node16/tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "./",
+    "preserveConstEnums": true,
+    "strictNullChecks": true,
+    "types": ["jest"],
+    "noEmit": true
+  },
+  "include": ["src/**/*"]
+}
