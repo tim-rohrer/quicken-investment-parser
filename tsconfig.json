@@ -4,7 +4,7 @@
     "rootDir": "./",
     "preserveConstEnums": true,
     "strictNullChecks": true,
-    "types": ["jest"],
+    "types": ["jest", "node"],
     "noEmit": true
   },
   "include": ["src/**/*"]
