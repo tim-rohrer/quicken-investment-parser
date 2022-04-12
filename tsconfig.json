@@ -1,11 +1,12 @@
 {
   "extends": "@tsconfig/node16/tsconfig.json",
   "compilerOptions": {
-    "rootDir": "./",
+    "outDir": "./dist",
+    "sourceMap": true,
+    "declaration": true,
     "preserveConstEnums": true,
     "strictNullChecks": true,
-    "types": ["jest", "node"],
-    "noEmit": true
+    "types": ["jest", "node"]
   },
-  "include": ["src/**/*"]
+  "exclude": ["node_modules", "**/*.spec.ts"]
 }
