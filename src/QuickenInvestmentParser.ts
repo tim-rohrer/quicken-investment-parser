@@ -1,42 +1,41 @@
-import fs from "fs"
-import csv from "csv-parser"
-import { Err, Ok, Result } from "ts-results"
-import TransactionMapped from "./TransactionMapped"
+import { promises as fsp } from "node:fs"
+import neatCsv from "neat-csv"
+import { Err, Ok, Result } from "ts-results-es"
+import TransactionMapped from "./TransactionMapped.js"
 
-interface InvestmentParser<T> {
-  fileExists(): boolean
-  fileContents(): Result<Record<string, string>[] | undefined, Error>
-  parsedData(): Result<string[], Error>
+export type CSVData = Record<string, string>[]
+export type ParsedData = string[]
+type RecordsResult = Result<CSVData, Error>
+type StringsResult = Result<ParsedData, Error>
+
+interface InvestmentParser {
+  sourceFile: string
+  csvFileContents(): Promise<RecordsResult>
+  parsedData(): Promise<StringsResult>
 }
-export default class QuickenInvestmentParser<T> implements InvestmentParser<T> {
-  fileExists(): boolean {
-    return fs.existsSync("./export.csv") ? true : false
+export default class QuickenInvestmentParser implements InvestmentParser {
+  sourceFile: string
+
+  constructor(filePathName: string) {
+    this.sourceFile = filePathName // should sanitize this
   }
 
-  fileContents(): Result<Record<string, string>[] | undefined, Error> {
-    const results: Record<string, string>[] = []
-
+  async csvFileContents(): Promise<Result<CSVData, Error>> {
     try {
-      fs.createReadStream("./export.csv")
-        .pipe(csv())
-        .on("data", (data) => results.push(data))
-      return Ok(results)
+      const data = await fsp.readFile(this.sourceFile, { encoding: "utf-8" })
+      return Ok(await neatCsv(data))
     } catch (e) {
-      console.error(e)
-      if (e instanceof Error) {
-        return Err(e)
-      } else return Err(new Error("Unknown error"))
+      return Err(e)
     }
   }
 
-  parsedData(): Result<string[], Error> {
-    const data = this.fileContents()
-    const { ok, err, val } = data
+  async parsedData(): Promise<StringsResult> {
+    const { ok, err, val } = await this.csvFileContents()
     if (err) return Err(val)
     const finalParsed: string[] = []
     if (ok && val === undefined) return Err(new Error("No data in csv file."))
     if (ok && val != undefined) {
-      val.forEach((transaction) => {
+      val.forEach((transaction: Record<string, string>) => {
         finalParsed.push(JSON.stringify(new TransactionMapped(transaction)))
       })
     }

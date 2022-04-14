@@ -1,5 +1,4 @@
-import { isNumberObject } from "util/types"
-import TransactionMapped from "./TransactionMapped"
+import TransactionMapped from "./TransactionMapped.js"
 
 const transactionFixture = [
   {
@@ -235,7 +234,7 @@ const transactionFixture = [
   },
 ]
 
-let quickenData = transactionFixture
+const quickenData = transactionFixture
 
 describe("TransactionMapped", () => {
   it("instantiates with a property of Quicken Lot Data", () => {

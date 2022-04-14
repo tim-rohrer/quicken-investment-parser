@@ -1,11 +1,8 @@
-let fs = require("fs")
-import csvParser from "csv-parser"
-import { ErrImpl, OkImpl, Result } from "ts-results"
-import QuickenInvestmentParser from "./QuickenInvestmentParser"
-import TransactionMapped from "./TransactionMapped"
-jest.mock("fs")
+import { jest } from "@jest/globals"
+import { ErrImpl, OkImpl } from "ts-results-es"
+import QuickenInvestmentParser, { CSVData } from "./QuickenInvestmentParser"
 
-const quickenInvestmentFileContentsFixture = [
+const quickenInvestmentFileContentsFixture: CSVData = [
   {
     Date: "3/31/2016",
     Type: "Buy",
@@ -240,93 +237,44 @@ const quickenInvestmentFileContentsFixture = [
 ]
 
 describe("QuickenInvestmentParser", () => {
-  it("returns an instance of itself", () => {
-    const qp = new QuickenInvestmentParser<TransactionMapped>()
-
+  const qp = new QuickenInvestmentParser("export.csv")
+  // beforeEach(() => jest.resetAllMocks())
+  it("returns an instance of itself with sourceFile set", () => {
     expect(qp).toBeInstanceOf(QuickenInvestmentParser)
+    expect(qp.sourceFile).toBe("export.csv")
   })
-  describe("fileExists", () => {
-    it("returns true if file exists", () => {
-      const qp = new QuickenInvestmentParser<TransactionMapped>()
-      jest.spyOn(fs, "existsSync").mockReturnValue(true)
 
-      expect(qp.fileExists()).toBe(true)
-    })
-    it("returns false if file is missing", () => {
-      const qp = new QuickenInvestmentParser<TransactionMapped>()
-      jest.spyOn(fs, "existsSync").mockReturnValue(false)
-
-      expect(qp.fileExists()).toBe(false)
-    })
-  })
-  describe("fileContents", () => {
-    it("returns Ok with a successful fetch of file contents", () => {
-      const mReadStream = {
-        pipe: jest.fn().mockReturnThis(),
-        on: jest.fn().mockImplementation((event, handler) => {
-          handler()
-          return this
-        }),
-      }
-      fs.createReadStream.mockReturnValueOnce(mReadStream)
-
-      const qp = new QuickenInvestmentParser<TransactionMapped>()
-      const results = qp.fileContents()
-
-      expect(fs.createReadStream).toBeCalledTimes(1)
-      expect(mReadStream.pipe).toBeCalledTimes(1)
-      expect(mReadStream.on).toBeCalledWith("data", expect.any(Function))
-      expect(results.ok).toBe(true)
-    })
-    it("handles an error", () => {
-      const mReadStream = {
-        pipe: jest.fn().mockReturnThis(),
-        on: jest.fn().mockImplementation(() => {
-          throw new Error()
-        }),
-      }
-      fs.createReadStream.mockReturnValueOnce(mReadStream)
-
-      const qp = new QuickenInvestmentParser<TransactionMapped>()
-      const results = qp.fileContents()
-
-      expect(mReadStream.pipe).toBeCalledTimes(1)
-      expect(results.err).toBe(true)
-    })
-  })
   describe("parsedData", () => {
-    it("returns an array of length 11", () => {
+    it("returns an array of length 11", async () => {
+      const mockVal = quickenInvestmentFileContentsFixture
+
       jest
-        .spyOn(QuickenInvestmentParser.prototype, "fileContents")
-        .mockReturnValue(<OkImpl<any>>{
+        .spyOn(QuickenInvestmentParser.prototype, "csvFileContents")
+        .mockResolvedValueOnce(<OkImpl<CSVData>>{
           ok: true,
           err: false,
-          val: quickenInvestmentFileContentsFixture,
+          val: mockVal,
         })
-      const qp = new QuickenInvestmentParser<TransactionMapped>()
 
-      const results = qp.parsedData()
+      const result = await qp.parsedData()
 
-      if (results.ok) {
-        expect(results.val.length).toBe(11)
-      } else console.error("Test failed!")
+      expect(result.val).toHaveLength(11)
     })
-    it("returns an Error if there are no data from the file", () => {
+    it("returns an Error if there are no data from the file", async () => {
       jest
-        .spyOn(QuickenInvestmentParser.prototype, "fileContents")
-        .mockReturnValue(<ErrImpl<Error>>{
+        .spyOn(QuickenInvestmentParser.prototype, "csvFileContents")
+        .mockResolvedValue(<ErrImpl<Error>>{
           ok: false,
           err: true,
           val: new Error("No data in csv file."),
         })
-      const qp = new QuickenInvestmentParser<TransactionMapped>()
+      let message = ""
 
-      const results = qp.parsedData()
+      const { err, val } = await qp.parsedData()
 
-      expect(results.val).toBeInstanceOf(Error)
-      if (results.err) {
-        expect(results.val.message).toBe("No data in csv file.")
-      } else console.error("Test failed!")
+      if (err) message = val.message
+      expect(val).toBeInstanceOf(Error)
+      expect(message).toBe("No data in csv file.")
     })
   })
 })

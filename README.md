@@ -4,6 +4,11 @@ Parses an exported csv file from Quicken into a manageable form.
 
 The purpose is to specifically take exported investment information and use nodejs to clean it up into a form compliant with the following interface:
 
+## ESM
+
+This module is pure ESM
+## Note: interfaces are not currently implemented as below
+
 ```ts
 interface InvestmentPositions {
   date: Date

@@ -1,6 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class TransactionMapped {
+export default class TransactionMapped {
     constructor(qData) {
         this.quickenData = qData;
         this.date = new Date(qData.Date);
@@ -21,5 +19,4 @@ class TransactionMapped {
         this.account = qData.Account;
     }
 }
-exports.default = TransactionMapped;
 //# sourceMappingURL=TransactionMapped.js.map
