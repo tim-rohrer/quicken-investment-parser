@@ -1,6 +1,7 @@
 import { Result } from "ts-results-es";
+import TransactionMapped from "./TransactionMapped.js";
 export declare type CSVData = Record<string, string>[];
-export declare type ParsedData = string[];
+export declare type ParsedData = TransactionMapped[];
 declare type RecordsResult = Result<CSVData, Error>;
 declare type StringsResult = Result<ParsedData, Error>;
 interface InvestmentParser {

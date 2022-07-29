@@ -1,5 +1,5 @@
-import { promises as fsp } from "node:fs";
 import neatCsv from "neat-csv";
+import { promises as fsp } from "node:fs";
 import { Err, Ok } from "ts-results-es";
 import TransactionMapped from "./TransactionMapped.js";
 export default class QuickenInvestmentParser {
@@ -24,7 +24,7 @@ export default class QuickenInvestmentParser {
             return Err(new Error("No data in csv file."));
         if (ok && val != undefined) {
             val.forEach((transaction) => {
-                finalParsed.push(JSON.stringify(new TransactionMapped(transaction)));
+                finalParsed.push(new TransactionMapped(transaction));
             });
         }
         return Ok(finalParsed);

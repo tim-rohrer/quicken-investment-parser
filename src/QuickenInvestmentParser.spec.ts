@@ -1,5 +1,7 @@
-import { jest } from "@jest/globals"
 import { ErrImpl, OkImpl } from "ts-results-es"
+
+import { jest } from "@jest/globals"
+
 import QuickenInvestmentParser, { CSVData } from "./QuickenInvestmentParser"
 
 const quickenInvestmentFileContentsFixture: CSVData = [
@@ -244,37 +246,35 @@ describe("QuickenInvestmentParser", () => {
     expect(qp.sourceFile).toBe("export.csv")
   })
 
-  describe("parsedData", () => {
-    it("returns an array of length 11", async () => {
-      const mockVal = quickenInvestmentFileContentsFixture
+  test("parsedData returns an array of length 11", async () => {
+    const mockVal = quickenInvestmentFileContentsFixture
 
-      jest
-        .spyOn(QuickenInvestmentParser.prototype, "csvFileContents")
-        .mockResolvedValueOnce(<OkImpl<CSVData>>{
-          ok: true,
-          err: false,
-          val: mockVal,
-        })
+    jest
+      .spyOn(QuickenInvestmentParser.prototype, "csvFileContents")
+      .mockResolvedValueOnce(<OkImpl<CSVData>>{
+        ok: true,
+        err: false,
+        val: mockVal,
+      })
 
-      const result = await qp.parsedData()
+    const result = await qp.parsedData()
 
-      expect(result.val).toHaveLength(11)
-    })
-    it("returns an Error if there are no data from the file", async () => {
-      jest
-        .spyOn(QuickenInvestmentParser.prototype, "csvFileContents")
-        .mockResolvedValue(<ErrImpl<Error>>{
-          ok: false,
-          err: true,
-          val: new Error("No data in csv file."),
-        })
-      let message = ""
+    expect(result.val).toHaveLength(11)
+  })
+  test("parsedData returns an Error if there are no data from the file", async () => {
+    jest
+      .spyOn(QuickenInvestmentParser.prototype, "csvFileContents")
+      .mockResolvedValue(<ErrImpl<Error>>{
+        ok: false,
+        err: true,
+        val: new Error("No data in csv file."),
+      })
+    let message = ""
 
-      const { err, val } = await qp.parsedData()
+    const { err, val } = await qp.parsedData()
 
-      if (err) message = val.message
-      expect(val).toBeInstanceOf(Error)
-      expect(message).toBe("No data in csv file.")
-    })
+    if (err) message = val.message
+    expect(val).toBeInstanceOf(Error)
+    expect(message).toBe("No data in csv file.")
   })
 })

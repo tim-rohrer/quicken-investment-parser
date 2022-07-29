@@ -1,10 +1,11 @@
-import { promises as fsp } from "node:fs"
 import neatCsv from "neat-csv"
+import { promises as fsp } from "node:fs"
 import { Err, Ok, Result } from "ts-results-es"
+
 import TransactionMapped from "./TransactionMapped.js"
 
 export type CSVData = Record<string, string>[]
-export type ParsedData = string[]
+export type ParsedData = TransactionMapped[]
 type RecordsResult = Result<CSVData, Error>
 type StringsResult = Result<ParsedData, Error>
 
@@ -32,11 +33,11 @@ export default class QuickenInvestmentParser implements InvestmentParser {
   async parsedData(): Promise<StringsResult> {
     const { ok, err, val } = await this.csvFileContents()
     if (err) return Err(val)
-    const finalParsed: string[] = []
+    const finalParsed: TransactionMapped[] = []
     if (ok && val === undefined) return Err(new Error("No data in csv file."))
     if (ok && val != undefined) {
       val.forEach((transaction: Record<string, string>) => {
-        finalParsed.push(JSON.stringify(new TransactionMapped(transaction)))
+        finalParsed.push(new TransactionMapped(transaction))
       })
     }
     return Ok(finalParsed)
