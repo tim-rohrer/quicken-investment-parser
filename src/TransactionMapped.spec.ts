@@ -237,10 +237,11 @@ const transactionFixture = [
 const quickenData = transactionFixture
 
 describe("TransactionMapped", () => {
-  it("instantiates with a property of Quicken Lot Data", () => {
+  it("instantiates with a property of Quicken Lot Data and a 10 character unique ID", () => {
     const testTransactionMapped = new TransactionMapped(quickenData[0])
 
     expect(testTransactionMapped).toHaveProperty("quickenData")
+    expect(testTransactionMapped.transactionId).toHaveLength(10)
   })
   it("contains mapped data elements of name and ticker", () => {
     const testTransactionMapped = new TransactionMapped(quickenData[0])

@@ -1,4 +1,7 @@
+import { nanoid } from "nanoid"
+
 interface InvestmentTransactionFromQuickenExport {
+  transactionId: string
   date: Date
   type: string
   action: string
@@ -21,6 +24,7 @@ interface InvestmentTransactionFromQuickenExport {
 export default class TransactionMapped
   implements InvestmentTransactionFromQuickenExport
 {
+  transactionId: string
   date: Date
   type: string
   action: string
@@ -40,6 +44,7 @@ export default class TransactionMapped
   quickenData: Record<string, string>
 
   constructor(qData: Record<string, string>) {
+    this.transactionId = nanoid(10)
     this.quickenData = qData
     this.date = new Date(qData.Date)
     this.type = qData.Type

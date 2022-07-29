@@ -1,5 +1,7 @@
+import { nanoid } from "nanoid";
 export default class TransactionMapped {
     constructor(qData) {
+        this.transactionId = nanoid(10);
         this.quickenData = qData;
         this.date = new Date(qData.Date);
         this.type = qData.Type;

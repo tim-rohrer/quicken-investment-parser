@@ -1,4 +1,5 @@
 interface InvestmentTransactionFromQuickenExport {
+    transactionId: string;
     date: Date;
     type: string;
     action: string;
@@ -18,6 +19,7 @@ interface InvestmentTransactionFromQuickenExport {
     quickenData: Record<string, string>;
 }
 export default class TransactionMapped implements InvestmentTransactionFromQuickenExport {
+    transactionId: string;
     date: Date;
     type: string;
     action: string;
