@@ -38,5 +38,6 @@ export default class TransactionMapped implements InvestmentTransactionFromQuick
     account: string;
     quickenData: Record<string, string>;
     constructor(qData: Record<string, string>);
+    numberOf(value: string): number;
 }
 export {};
