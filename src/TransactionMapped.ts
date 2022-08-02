@@ -53,14 +53,19 @@ export default class TransactionMapped
     this.securitySymbol = qData.Symbol
     this.payee = qData.Payee
     this.category = qData.Category
-    this.commissionFee = parseFloat(qData["Comm/Fee"])
-    this.sharesOut = parseFloat(qData["Shares Out"])
-    this.sharesIn = parseFloat(qData["Shares In"])
-    this.shares = parseFloat(qData.Shares)
-    this.cashOut = parseFloat(qData["Cash Out"])
-    this.cashIn = parseFloat(qData["Cash In"])
-    this.investAmt = parseFloat(qData["Invest Amt"])
-    this.amount = parseFloat(qData.Amount)
+    this.commissionFee = this.numberOf(qData["Comm/Fee"])
+    this.sharesOut = this.numberOf(qData["Shares Out"])
+    this.sharesIn = this.numberOf(qData["Shares In"])
+    this.shares = this.numberOf(qData.Shares)
+    this.cashOut = this.numberOf(qData["Cash Out"])
+    this.cashIn = this.numberOf(qData["Cash In"])
+    this.investAmt = this.numberOf(qData["Invest Amt"])
+    this.amount = this.numberOf(qData.Amount)
     this.account = qData.Account
+  }
+
+  numberOf(value: string) {
+    const newValue = value.length > 0 ? value : "0"
+    return parseFloat(newValue)
   }
 }

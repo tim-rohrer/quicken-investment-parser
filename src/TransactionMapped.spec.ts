@@ -255,8 +255,13 @@ describe("TransactionMapped", () => {
     expect(testTransactionMapped.account).toEqual(quickenData[0].Account)
   })
   it("handles conversion of strings to numbers where appropriate", () => {
-    const testTransactionMapped = new TransactionMapped(quickenData[0])
+    transactionFixture.forEach((transaction) => {
+      const testTransactionMapped = new TransactionMapped(transaction)
 
-    expect(typeof testTransactionMapped.sharesOut).toBe("number")
+      expect(typeof testTransactionMapped.sharesOut).toBe("number")
+      expect(typeof testTransactionMapped.cashIn).toBe("number")
+      console.log(testTransactionMapped)
+      expect(testTransactionMapped.cashIn).not.toBeNaN()
+    })
   })
 })
