@@ -22,7 +22,7 @@ export default class TransactionMapped {
     }
     numberOf(value) {
         const newValue = value.length > 0 ? value : "0";
-        return parseFloat(newValue);
+        return parseFloat(newValue.replace(",", ""));
     }
 }
 //# sourceMappingURL=TransactionMapped.js.map
