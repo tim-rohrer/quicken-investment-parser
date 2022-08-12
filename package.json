@@ -1,6 +1,6 @@
 {
   "name": "quicken-investment-parser",
-  "version": "0.6.1-alpha",
+  "version": "0.6.2-alpha",
   "description": "Parses an exported csv file from Quicken into a manageable form.",
   "exports": {
     ".": "./dist/index.js"

@@ -137,8 +137,8 @@ const transactionFixture = [
     "Statement Payee": "",
     Category: "Investments:Buy",
     "Comm/Fee": "",
-    "Shares Out": "",
-    "Shares In": "0.49",
+    "Shares Out": "-34,000.37",
+    "Shares In": "",
     Shares: "0.49",
     "Cash Out": "0.49",
     "Cash In": "",
@@ -257,11 +257,42 @@ describe("TransactionMapped", () => {
   it("handles conversion of strings to numbers where appropriate", () => {
     transactionFixture.forEach((transaction) => {
       const testTransactionMapped = new TransactionMapped(transaction)
-
       expect(typeof testTransactionMapped.sharesOut).toBe("number")
+      if (testTransactionMapped.sharesIn !== 0) {
+        // eslint-disable-next-line jest/no-conditional-expect
+        expect(String(testTransactionMapped.sharesIn)).toBe(
+          transaction["Shares In"],
+        )
+      }
       expect(typeof testTransactionMapped.cashIn).toBe("number")
-      console.log(testTransactionMapped)
       expect(testTransactionMapped.cashIn).not.toBeNaN()
     })
+  })
+
+  test("Fix broken number conversion", () => {
+    const testFunc = new TransactionMapped({
+      Date: "4/29/2016",
+      Type: "Buy",
+      Action: "",
+      Security: "FDIC INSURED ACCOUNT - IRA",
+      Symbol: "QRETQ",
+      Payee: "FDIC INSURED ACCOUNT - IRA",
+      "Statement Payee": "",
+      Category: "Investments:Buy",
+      "Comm/Fee": "",
+      "Shares Out": "",
+      "Shares In": "0.87",
+      Shares: "0.87",
+      "Cash Out": "0.87",
+      "Cash In": "",
+      "Invest Amt": "0.87",
+      Amount: "-0.87",
+      Account: "Tim's IRA",
+      "Statement Memo": "",
+      Reference: "",
+    })
+
+    expect(testFunc.numberOf("3")).toBe(3)
+    expect(testFunc.numberOf("-30,384.87")).toBe(-30384.87)
   })
 })
